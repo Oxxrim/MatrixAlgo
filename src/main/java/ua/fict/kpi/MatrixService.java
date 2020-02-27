@@ -1,9 +1,16 @@
 package ua.fict.kpi;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class MatrixService {
-    private int first[][] = new int[150][150];
-    private int second[][] = new int[150][150];
-    private int result[][] = new int[150][150];
+    int size = 2000;
+    private int first[][] = new int[size][size];
+    private int second[][] = new int[size][size];
+    private int result[][] = new int[size][size];
+
+    private List<MatrixThread> threads = new ArrayList<>();
 
     private double sec = 0;
 
@@ -15,6 +22,7 @@ public class MatrixService {
 
         sec = (double)(finish - start)/1000;
 
+        System.out.println(sec);
         printMatrix();
     }
 
@@ -28,26 +36,26 @@ public class MatrixService {
     }
 
     private void algo(){
-        for (int i = 0; i < first.length; i++){
-            final int finalI = i;
-            Thread thread = new Thread(new Runnable() {
-                public void run() {
-                    int[] row = first[finalI];
-                    int res = 0;
-                    for (int j = 0; j < row.length; j++) {
-                        for (int k = 0; k < row.length; k++) {
-                            res += row[k] * second[k][j];
-                        }
-                        result[finalI][j] = res;
-                        res = 0;
-                    }
+        for (int i = 0; i < first.length; i++) {
+            int[] row = first[i];
+
+            MatrixThread thread = new MatrixThread(i, row, result);
+            threads.add(thread);
+        }
+
+        for (int i = 0; i < size; i++) {
+            int[] column = getColumn(second, i);
+
+            for (MatrixThread thread : threads) {
+                thread.setColumn(column);
+                thread.setJ(i);
+
+                thread.run();
+                try {
+                    thread.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
-            });
-            thread.start();
-            try {
-                thread.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
             }
         }
     }
@@ -61,5 +69,9 @@ public class MatrixService {
         }
 
         System.out.println(sec);
+    }
+
+    private int[] getColumn(int[][] matrix, int column) {
+        return Arrays.stream(matrix).mapToInt(ints -> ints[column]).toArray();
     }
 }
