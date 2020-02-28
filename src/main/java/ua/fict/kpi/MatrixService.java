@@ -9,6 +9,7 @@ public class MatrixService {
     private int first[][] = new int[size][size];
     private int second[][] = new int[size][size];
     private int result[][] = new int[size][size];
+    private Result res = new Result(result);
 
     private List<MatrixThread> threads = new ArrayList<>();
 
@@ -23,7 +24,7 @@ public class MatrixService {
         sec = (double)(finish - start)/1000;
 
         System.out.println(sec);
-        printMatrix();
+//        printMatrix();
     }
 
     private void initializeMatrix(){
@@ -39,7 +40,7 @@ public class MatrixService {
         for (int i = 0; i < first.length; i++) {
             int[] row = first[i];
 
-            MatrixThread thread = new MatrixThread(i, row, result);
+            MatrixThread thread = new MatrixThread(i, row, res.getMatrix());
             threads.add(thread);
         }
 
@@ -51,6 +52,14 @@ public class MatrixService {
                 thread.setJ(i);
 
                 thread.run();
+//                try {
+//                    thread.join();
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+            }
+
+            for (MatrixThread thread : threads) {
                 try {
                     thread.join();
                 } catch (InterruptedException e) {
@@ -61,9 +70,10 @@ public class MatrixService {
     }
 
     private void printMatrix(){
+        int[][] result1 = res.getMatrix();
         for (int i = 0; i < first.length; i++) {
             for (int j = 0; j < second.length; j++) {
-                System.out.print(result[i][j] + " ");
+                System.out.print(result1[i][j] + " ");
             }
             System.out.print("\n");
         }
