@@ -1,15 +1,19 @@
 package ua.fict.kpi;
 
+import ua.fict.kpi.fox.FoxAlgo;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class MatrixService {
-    int size = 2000;
+    int size = 3000;
     private int first[][] = new int[size][size];
     private int second[][] = new int[size][size];
     private int result[][] = new int[size][size];
     private Result res = new Result(result);
+
+    private FoxAlgo foxAlgo = new FoxAlgo();
 
     private List<MatrixThread> threads = new ArrayList<>();
 
@@ -22,6 +26,12 @@ public class MatrixService {
         long finish = System.currentTimeMillis();
 
         sec = (double)(finish - start)/1000;
+//
+//        long start = System.currentTimeMillis();
+//        foxAlgo.multiplyMatrix(first, second, res.getMatrix());
+//        long finish = System.currentTimeMillis();
+//
+//        sec = (double)(finish - start)/1000;
 
         System.out.println(sec);
 //        printMatrix();
